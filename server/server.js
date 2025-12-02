@@ -18,6 +18,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:5173",
       "https://kaloob.raigrc.com",
+      "https://raigrc.com",
     ],
     credentials: true,
   })

@@ -17,4 +17,5 @@ COPY . .
 EXPOSE 5000
 
 # Specify the command to run the application
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+CMD ["node", "server.js"]
