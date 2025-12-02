@@ -2,7 +2,11 @@ import axios from "axios";
 
 let baseURL = "http://localhost:5000/api"; // default for dev
 
-if (window.location.hostname.includes("raigrc.com")) {
+// Use production API for anything that's NOT localhost
+if (
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1"
+) {
   baseURL = "https://kaloob-api-vrdyzcnn7q-uc.a.run.app/api";
 }
 

@@ -17,9 +17,9 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
+      "https://kaloob.pages.dev", // Add this
       "https://kaloob.raigrc.com",
       "https://raigrc.com",
-      "https://kaloob.pages.dev",
     ],
     credentials: true,
   })
