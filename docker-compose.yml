@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  # Backend service
+  backend:
+    build: ./server
+    container_name: backend-container
+    ports:
+      - "5000:5000"
+    environment:
+      # Use the MongoDB service name defined above to connect
+      - MONGO_URI=mongodb+srv://ravenjstngrc:oQdve2QTV14rdS0s@cluster0.o4c2ol9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+    restart: always
+
+  # Frontend service
+  frontend:
+    build: ./client
+    container_name: frontend-container
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
