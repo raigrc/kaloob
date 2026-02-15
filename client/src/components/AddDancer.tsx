@@ -5,8 +5,12 @@ import { useForm } from "react-hook-form";
 import { Input } from "./ui/input";
 import axios from "@/api/axios";
 import { Button } from "./ui/button";
+import { useData } from "@/context/DataContext";
 
 const AddDancer = () => {
+  // Get refetch function from context
+  const { refetchDancers } = useData();
+
   const dancerForm = useForm<TDancer>({
     resolver: zodResolver(DancerSchema),
     defaultValues: {
@@ -14,15 +18,20 @@ const AddDancer = () => {
     },
   });
 
-  const onAddDancer = (data: TDancer) => {
+  const onAddDancer = async (data: TDancer) => {
     try {
-      const response = axios.post("/dancers", data);
+      const response = await axios.post("/dancers", data);
       console.log("Dancer added successfully:", response);
+
+      // Reset form
       dancerForm.reset();
+
+      // 🎯 Refetch dancers to update the list everywhere!
+      await refetchDancers();
+      console.log("✅ Dancer list refreshed!");
     } catch (error) {
       console.error("Error adding dancer:", error);
     }
-    console.log(data);
   };
 
   return (

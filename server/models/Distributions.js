@@ -19,6 +19,9 @@ const distributionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Add index for dancerId for better query performance
+distributionSchema.index({ dancerId: 1 });
+
 const Distribution = mongoose.model("Distribution", distributionSchema);
 
 export default Distribution;

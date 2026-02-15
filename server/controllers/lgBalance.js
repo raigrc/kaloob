@@ -10,7 +10,7 @@ const lgBalanceController = {
         "Error fetching all LG Balances in controller layer:",
         error.message
       );
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
 
@@ -27,7 +27,7 @@ const lgBalanceController = {
         "Error fetching LG Balance by dancer ID in controller layer:",
         error.message
       );
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
 
@@ -38,6 +38,10 @@ const lgBalanceController = {
 
       if (totalEarnings === undefined || totalDistributions === undefined || currentBalance === undefined) {
         return res.status(400).json({ message: "totalEarnings, totalDistributions, and currentBalance are required" });
+      }
+
+      if (totalEarnings < 0 || totalDistributions < 0) {
+        return res.status(400).json({ message: "Earnings and distributions cannot be negative" });
       }
 
       const updatedLGBalance = await lgBalanceService.updateLGBalance(
@@ -53,7 +57,7 @@ const lgBalanceController = {
         "Error updating LG Balance in controller layer:",
         error.message
       );
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
 };

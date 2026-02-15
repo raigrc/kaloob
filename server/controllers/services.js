@@ -13,7 +13,7 @@ const servicesController = {
         "Error fetching all services in controller:",
         error.message
       );
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
   getServiceById: async (req, res) => {
@@ -26,7 +26,7 @@ const servicesController = {
       return res.status(200).json(service);
     } catch (error) {
       console.error("Error fetching one service in controller:", error.message);
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
   addService: async (req, res) => {
@@ -54,7 +54,7 @@ const servicesController = {
       if (error.message.includes("Service with this date already exists")) {
         return res.status(409).json({ message: error.message }); // 409 Conflict
       }
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
   updateService: async (req, res) => {
@@ -81,7 +81,7 @@ const servicesController = {
       return res.status(200).json({ message: "Service updated successfully" });
     } catch (error) {
       console.error("Error updating service in controller:", error.message);
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
   deleteService: async (req, res) => {
@@ -96,7 +96,7 @@ const servicesController = {
       return res.status(200).json({ message: "Service deleted successfully" });
     } catch (error) {
       console.error("Error deleting service in controller:", error.message);
-      res.status(500).send("Server Error");
+      res.status(500).json({ message: "Server Error" });
     }
   },
 };

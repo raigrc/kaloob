@@ -1,9 +1,8 @@
 import { AttendanceSchema, TAttendance } from "@/schemas/attendance";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
-import { IAttendance, IDancer } from "@/types";
+import { IAttendance } from "@/types";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { format } from "date-fns";
@@ -19,10 +18,11 @@ import {
 } from "./ui/dialog";
 import { CirclePlus } from "lucide-react";
 import AddDancer from "./AddDancer";
-import { fetchDancers } from "@/api/dancers";
+import { useData } from "@/context/DataContext";
 
 const AttendanceForm = () => {
-  const [dancers, setDancers] = useState<IDancer[]>([]);
+  // Get dancers from context instead of local state
+  const { dancers, refetchAll } = useData();
 
   const form = useForm<TAttendance>({
     resolver: zodResolver(AttendanceSchema),
@@ -30,20 +30,6 @@ const AttendanceForm = () => {
       dancerId: [],
     },
   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchDancers();
-        if (response && response.data) {
-          setDancers(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching dancers:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const onSubmit = async (data: IAttendance) => {
     try {
@@ -96,7 +82,13 @@ const AttendanceForm = () => {
       );
       console.log("Attendance submission results:", attendanceResponses);
 
+      // Reset form
       form.reset();
+
+      // 🎯 IMPORTANT: Refetch all data to update the dashboard!
+      await refetchAll();
+
+      console.log("✅ Dashboard data refreshed!");
     } catch (error) {
       console.error("Error submitting attendance (overall):", error);
     }

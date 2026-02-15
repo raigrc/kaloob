@@ -6,6 +6,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Check } from "lucide-react";
 import { getAdvanceLG } from "@/api/advance";
+import { useData } from "@/context/DataContext";
 
 const AdvanceLGForm = ({
   dancerId,
@@ -14,6 +15,8 @@ const AdvanceLGForm = ({
   dancerId: string;
   handleCloseForm?: () => void;
 }) => {
+  // Get refetch function from context
+  const { refetchAll } = useData();
   const form = useForm<TDistribution>({
     resolver: zodResolver(DistributionSchema),
     defaultValues: {
@@ -25,37 +28,55 @@ const AdvanceLGForm = ({
 
   const onSubmit = async (data: TDistribution) => {
     try {
-      console.log(data);
-      console.log(data.amount);
-      console.log(data.dancerId);
-      console.log(data.distributionDate);
+      console.log("📤 Submitting advance:", data);
+
       const response = await getAdvanceLG(
         data.dancerId,
         data.amount,
-        data.distributionDate
+        data.distributionDate,
       );
-      if (response && response.response?.data) {
-        console.log({ response, message: "Successfully get an advance" });
+
+      console.log("📥 Response from getAdvanceLG:", response);
+
+      // Check if the operation was successful
+      if (response) {
+        console.log("✅ Advance successful!");
+
+        // 🎯 ALWAYS refetch data to update the UI
+        console.log("🔄 Refetching all data...");
+        await refetchAll();
+        console.log("✅ Balance updated after advance!");
+
+        // Close the form
         if (handleCloseForm) {
           handleCloseForm();
         }
+      } else {
+        console.error("❌ No response from getAdvanceLG - operation may have failed");
+        alert("Failed to process advance. Please try again.");
       }
     } catch (error) {
-      console.error(error);
-      return null;
+      console.error("❌ Error in advance form:", error);
+      alert("An error occurred. Please try again.");
     }
   };
   return (
     <div className="w-2/3 lg:w-5/12">
       <Form {...form}>
-        <form onClick={form.handleSubmit(onSubmit)} className="relative">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
           <FormField
             control={form.control}
             name="amount"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="Enter amount"
+                    min="0"
+                    step="1"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

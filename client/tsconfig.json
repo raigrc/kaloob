@@ -18,9 +18,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vite/client", "vite-plugin-svgr/client"]
   },
   "include": ["src", "vite-env.d.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "types": ["vite/client", "vite-plugin-svgr/client"]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

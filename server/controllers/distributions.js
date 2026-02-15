@@ -32,6 +32,9 @@ const distributionController = {
       if (!dancerId || !amount || !distributionDate) {
         return res.status(400).json({ message: "All fields are required" });
       }
+      if (amount <= 0) {
+        return res.status(400).json({ message: "Amount must be greater than 0" });
+      }
       const newDistribution = await distributionService.addDistribution(
         dancerId,
         amount,

@@ -34,6 +34,12 @@ app.use("/api/distributions", distributionRoutes);
 
 const PORT = process.env.PORT || 5000;
 
+// Validate required environment variables
+if (!process.env.MONGO_URI) {
+  console.error("❌ MONGO_URI is not defined in environment variables");
+  process.exit(1);
+}
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() =>

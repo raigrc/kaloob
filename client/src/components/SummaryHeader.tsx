@@ -1,18 +1,20 @@
-import { fetchAllLGBalances, sumAllLGBalances } from "@/api/lg-balance";
 import { currencyFormat } from "@/lib/currencyFormat";
-import { ILGBalance } from "@/types";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useData } from "@/context/DataContext";
+import { useMemo } from "react";
 
 const SummaryHeader = () => {
-  const [totalLGBalance, setTotalLGBalances] = useState<number>(0);
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await sumAllLGBalances();
-      setTotalLGBalances(response);
-    };
-    fetchData();
-  }, []);
+  // Get balances from context
+  const { lgBalances } = useData();
+
+  // Calculate total from context data (recalculates when lgBalances changes)
+  const totalLGBalance = useMemo(() => {
+    return lgBalances.reduce(
+      (sum, balance) =>
+        sum + (balance.totalEarnings - balance.totalDistributions || 0),
+      0
+    );
+  }, [lgBalances]);
   return (
     <>
       <div className="flex flex-row items-center justify-between py-1 text-2xl tracking-wider uppercase border-b-4 border-accent">

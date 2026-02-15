@@ -42,24 +42,47 @@ const History = () => {
   }, [dancerId, dancers]);
 
   return (
-    <div className="flex flex-col justify-between w-full h-full overflow-hidden font-dity text-accent">
+    <div className="flex flex-col w-full h-full overflow-hidden font-dity text-accent">
       <HistoryHeader dancer={currentDancer} />
-      <div className="h-full ">
-        <div className="flex flex-row items-center h-full gap-4">
-          <div className="w-3/4 overflow-auto h-[600px] lg:max-h-[800px]">
-            <HistoryDancer currentDancer={currentDancer} />
-          </div>
-          <div className="w-1/4 overflow-y-scroll no-scrollbar h-3/5 bg-[#496C26] p-4">
+
+      {/* Main Content Area */}
+      <div className="flex flex-col flex-1 gap-4 p-4 overflow-hidden lg:flex-row">
+        {/* History Table - Full width on mobile, 3/4 on desktop */}
+        <div className="flex-1 overflow-auto rounded-lg lg:w-3/4">
+          <HistoryDancer currentDancer={currentDancer} />
+        </div>
+
+        {/* Dancer List - Horizontal scroll on mobile, vertical on desktop */}
+        <div className="lg:w-1/4 shrink-0">
+          {/* Mobile: Horizontal Scroll */}
+          <div className="flex gap-2 pb-2 overflow-x-auto lg:hidden no-scrollbar">
             {dancers.map((dancer) => (
-              <Link to={`/history/${dancer._id}`}>
+              <Link key={dancer._id} to={`/history/${dancer._id}`}>
                 <Button
-                  key={dancer._id}
                   onClick={() => setCurrentDancer(dancer)}
                   className={`${
                     currentDancer?._id === dancer._id
                       ? "bg-accent text-primary"
-                      : "bg-black/0"
-                  } w-full my-2 uppercase border-2 rounded-full `}
+                      : "bg-[#496C26] text-accent hover:bg-accent/20"
+                  } uppercase border-2 border-accent rounded-full px-6 py-2 whitespace-nowrap transition-colors`}
+                >
+                  {dancer.name}
+                </Button>
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop: Vertical List */}
+          <div className="hidden overflow-y-auto bg-[#496C26] rounded-lg p-4 h-full lg:block no-scrollbar">
+            {dancers.map((dancer) => (
+              <Link key={dancer._id} to={`/history/${dancer._id}`}>
+                <Button
+                  onClick={() => setCurrentDancer(dancer)}
+                  className={`${
+                    currentDancer?._id === dancer._id
+                      ? "bg-accent text-primary"
+                      : "bg-black/0 hover:bg-accent/20"
+                  } w-full my-2 uppercase border-2 border-accent rounded-full transition-colors`}
                 >
                   {dancer.name}
                 </Button>
@@ -68,20 +91,6 @@ const History = () => {
           </div>
         </div>
       </div>
-
-      {/* <div className="flex flex-row items-center justify-between h-full gap-4 overflow-auto">
-        <div className="w-3/4 h-full overflow-auto bg-red-500">{<Outlet />}</div>
-        <div className="w-1/4 overflow-auto no-scrollbar bg-[#496C26] h-4/5 p-4 rounded-lg">
-          {dancers.map((dancer) => (
-            <Button
-              key={dancer._id}
-              className="w-full my-2 uppercase border-2 rounded-full bg-black/0"
-            >
-              <Link to={`/history/${dancer._id}`}>{dancer.name}</Link>
-            </Button>
-          ))}
-        </div>
-      </div> */}
     </div>
   );
 };

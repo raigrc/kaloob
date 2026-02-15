@@ -1,15 +1,10 @@
-import { fetchDancers } from "@/api/dancers";
-import { fetchAllLGBalances } from "@/api/lg-balance";
 import { currencyFormat } from "@/lib/currencyFormat";
-import { IDancer, ILGBalance } from "@/types";
-import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Check } from "lucide-react";
 import { Minus } from "lucide-react";
 import { claimLGBalance } from "@/api/distribution";
-import { getAdvanceLG } from "@/api/advance";
 import AdvanceLGForm from "./AdvanceLGForm";
-import { Link } from "react-router-dom";
+import { useData } from "@/context/DataContext";
 
 const SummaryBody = ({
   isClaiming,
@@ -24,40 +19,23 @@ const SummaryBody = ({
   isHold: boolean;
   setEditingDancer: (value: string | null) => void;
 }) => {
-  const [dancers, setDancers] = useState<IDancer[]>([]);
-  const [lgBalance, setLgBalance] = useState<ILGBalance[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const [dancersResponse, lgBalanceResponse] = await Promise.all([
-        fetchDancers(),
-        fetchAllLGBalances(),
-      ]);
-
-      if (dancersResponse && dancersResponse.data) {
-        setDancers(dancersResponse.data);
-      } else {
-        setDancers([]);
-      }
-      if (lgBalanceResponse && lgBalanceResponse.data) {
-        setLgBalance(lgBalanceResponse.data);
-        console.log(lgBalanceResponse.data);
-      } else {
-        setLgBalance([]);
-      }
-    };
-    fetchData();
-  }, []);
+  // Get data from context instead of fetching locally
+  const { dancers, lgBalances, refetchAll } = useData();
 
   const getDancerLGBalance = (dancerId: string) => {
-    const balance = lgBalance.find((lb) => lb.dancerId === dancerId);
+    const balance = lgBalances.find((lb) => lb.dancerId === dancerId);
     return balance;
   };
 
-  const claimLG = (dancerId: string) => {
+  const claimLG = async (dancerId: string) => {
     try {
-      claimLGBalance(dancerId);
-    } catch (error) {}
+      await claimLGBalance(dancerId);
+      // 🎯 Refetch data after claiming to update the UI
+      await refetchAll();
+      console.log("✅ Balance claimed and data refreshed!");
+    } catch (error) {
+      console.error("Error claiming balance:", error);
+    }
   };
 
   const handleEdit = (dancerId: string) => {
@@ -101,7 +79,10 @@ const SummaryBody = ({
                 </Button>
               </div>
               {editingDancer === dancer._id ? (
-                <AdvanceLGForm dancerId={dancer._id} />
+                <AdvanceLGForm
+                  dancerId={dancer._id}
+                  handleCloseForm={() => setEditingDancer(null)}
+                />
               ) : (
                 <div
                   key={dancer._id}

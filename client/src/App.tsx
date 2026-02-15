@@ -14,6 +14,7 @@ import KaloobLogo from "./assets/kaloob.svg?react";
 import { History } from "lucide-react";
 import HistoryPage from "./pages/HistoryPage";
 import HistoryDancer from "./components/HistoryDancer";
+import { DataProvider } from "./context/DataContext";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -67,7 +68,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <AppContent />
+      <DataProvider>
+        <AppContent />
+      </DataProvider>
     </Router>
   );
 };
