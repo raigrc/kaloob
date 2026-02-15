@@ -14,6 +14,7 @@ import KaloobLogo from "./assets/kaloob.svg?react";
 import { History } from "lucide-react";
 import HistoryPage from "./pages/HistoryPage";
 import HistoryDancer from "./components/HistoryDancer";
+import DancerViewPage from "./pages/DancerViewPage";
 import { DataProvider } from "./context/DataContext";
 
 const AppContent: React.FC = () => {
@@ -67,12 +68,25 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
+    <DataProvider>
+      <Routes>
+        {/* Dancer View Route - No sidebar, public view */}
+        <Route path="/dancer-view" element={<DancerViewPage />} />
+        <Route path="/dancer-view/:dancerId" element={<DancerViewPage />} />
+
+        {/* Admin Routes - With sidebar */}
+        <Route path="/*" element={<AppContent />} />
+      </Routes>
+    </DataProvider>
+  );
+};
+
+const AppWrapper: React.FC = () => {
+  return (
     <Router>
-      <DataProvider>
-        <AppContent />
-      </DataProvider>
+      <App />
     </Router>
   );
 };
 
-export default App;
+export default AppWrapper;

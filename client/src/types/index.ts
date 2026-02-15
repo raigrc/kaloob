@@ -21,7 +21,7 @@ export interface IDancerHistory {
   name: string;
   lgbalance: number;
   history: {
-    type: "distribution" | "service";
+    type: "distribution" | "attendance";
     date: string;
     amount?: number;
   }[];

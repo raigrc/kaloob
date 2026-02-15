@@ -116,6 +116,7 @@ const dancerService = {
                 $project: {
                   _id: 0,
                   date: "$serviceDetails.date",
+                  amount: 1,
                 },
               },
             ],
@@ -133,8 +134,9 @@ const dancerService = {
                     input: "$attendances",
                     as: "att",
                     in: {
-                      type: "service",
+                      type: "attendance",
                       date: "$$att.date",
+                      amount: "$$att.amount",
                     },
                   },
                 },

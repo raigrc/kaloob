@@ -65,6 +65,7 @@ const AttendanceForm = () => {
           await axios.post("/attendance", {
             dancerId,
             serviceId,
+            amount: earningAmount,
           });
           // Fetch current totalEarnings for the dancer
           const balanceRes = await axios.get(`/lgbalance/${dancerId}`);

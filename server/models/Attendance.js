@@ -12,6 +12,11 @@ const attendanceSchema = new mongoose.Schema(
       ref: "Service",
       required: true,
     },
+    amount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

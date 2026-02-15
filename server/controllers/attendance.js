@@ -68,11 +68,11 @@ const attendanceController = {
   },
   addAttendance: async (req, res) => {
     try {
-      const { dancerId, serviceId } = req.body;
-      if (!dancerId || !serviceId) {
+      const { dancerId, serviceId, amount } = req.body;
+      if (!dancerId || !serviceId || amount === undefined) {
         return res
           .status(400)
-          .json({ message: "Dancer ID and Service ID are required" });
+          .json({ message: "Dancer ID, Service ID, and amount are required" });
       }
       const newAttendance = await attendanceService.addAttendance(req.body);
       return res.status(201).json(newAttendance);
